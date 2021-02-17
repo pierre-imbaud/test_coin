@@ -1,0 +1,9 @@
+Voici des recommandations pour réaliser le test. 
+
+1) Ecrire la fonctionnalité demandée
+2) Ecrire des tests unitaire.
+3) Ecrire des tests fonctionnels (appel du Web Service, vérification de la réponse).
+4) Ecrire un Dockerfile qui lance le serveur Python.
+5) Lancer les tests en automatiques avec github action :
+
+
