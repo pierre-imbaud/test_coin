@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""Script de repérage des carrés.
+"""
+
+import sys
+
+import square
+
+def main():
+
+    for fname in sys.argv[1:]:
+        try:
+            instance = square.inFile(fname)
+        except ValueError:
+            print('map error', file=sys.stderr)
+            sys.exit()
+
+        instance.scan_brutal()
+        plateau = instance.fill_plateau()
+        instance.print_plateau(plateau)
+
+
+
+
+if __name__ == '__main__':
+    main()
