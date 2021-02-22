@@ -36,6 +36,7 @@ class inFile():
         """ read content from input flow
         """
         spl = spec_line = inf.readline().strip()
+        del spec_line
         # fix! might strip leading spaces, if eg vide char is space
         if len(spl) < 4:
             raise ValueError('premiere ligne %s pas assez longue' % spl)
