@@ -218,10 +218,10 @@ class Test_Scan_Carre:
         assert taille == 4
 
 
-class Test_fail:
+class nTest_fail:
 
     """ test intended to fail, to validate github control
-        inhibit by removing Test from class name
+        inhibit by removing Test from class name stem
     """
 
     def test_fail(self):
