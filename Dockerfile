@@ -1,5 +1,13 @@
 # test coin dockerfile
-FROM python:3.7.5
+FROM ubuntu:latest
+
+# ssh part:
+
+RUN apt update && apt install -y \
+		      openssh-server \
+		      sudo
+
+# appli install:
 
 WORKDIR /usr/src/lib
 COPY lib .
@@ -13,6 +21,19 @@ COPY example_file .
 ENV PYTHONPATH /usr/src/lib
 ENV PATH $PATH:/usr/src/bin
 
+WORKDIR /
 
-RUN python -m pip install \
-        ipython  
+# user setup
+
+RUN useradd -rm -d /home/machin -s /bin/bash -g root -G sudo -u 1000 machin 
+
+RUN  echo 'machin:machin' | chpasswd
+
+# ssh setup
+
+RUN service ssh start
+
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd","-D"]
+

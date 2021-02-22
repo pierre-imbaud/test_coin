@@ -76,3 +76,28 @@ class Test_Nominal:
         assert result
         with open('many_test_result', 'w') as f:
             f.write(result)
+
+    def test_from_stdin(self, map):
+        "as test_one, but reading file from stdin"
+
+        command = ['./scripts/find_square', "-"]
+        process = sp.Popen(command, stdin=sp.PIPE, stdout=sp.PIPE)
+        process.stdin.write(bytes(map, "utf-8"))
+        result = process.stdout.read().decode()
+        assert 22
+        assert result
+        with open('many_test_result', 'w') as f:
+            f.write(result)        
+
+
+    def test_from_stdin(self, map):
+        "as test_one, but reading file from stdin"
+
+        command = ['./scripts/find_square', "-"]
+        process = sp.Popen(command, stdin=sp.PIPE, stdout=sp.PIPE)
+        process.stdin.write(bytes(map, "utf-8"))
+        process.stdin.close()
+        result = process.stdout.read().decode()
+        assert result
+        with open('many_test_result', 'w') as f:
+            f.write(result)        
