@@ -1,0 +1,19 @@
+#! /usr/bin/bash
+
+# build coin docker file
+# call from top directory
+
+
+mkdir -p build
+
+rm -rf build/*
+
+cp Dockerfile example_file build
+
+rsync -av lib build
+
+rsync -av scripts build
+
+cd build
+
+docker build -t test_coin .
