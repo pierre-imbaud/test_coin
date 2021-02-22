@@ -5,7 +5,6 @@
 """
 
 import pytest
-import unittest
 from unittest import mock
 
 import square as mut            # module under test
@@ -21,9 +20,10 @@ ooooooo
 """
 
 not_an_int = base_sample.replace('4', '4t')
-with_unexp_char  = base_sample.replace('.o.', 'vo.')
+with_unexp_char = base_sample.replace('.o.', 'vo.')
 unequal = base_sample.replace('ooooooo', 'oooooo')
-sample = mock.mock_open(read_data = base_sample)
+sample = mock.mock_open(read_data=base_sample)
+
 
 @pytest.fixture
 def virgin10():
@@ -31,6 +31,7 @@ def virgin10():
     """
     iut = cut('tests/10nobs')
     return iut
+
 
 @pytest.fixture
 def spotted10():
@@ -43,13 +44,14 @@ def spotted10():
     iut.recouche()
     return iut
 
+
 @pytest.fixture
 def squarobs():
     """ a 10x10 plateau with a 3x3 obstacle centered
     """
     iut = virgin10()
     plateau = list([list(x) for x in iut.plateau])
-    obstacle3 = [obstacle] * 3
+    obstacle3 = [iut.obstacle] * 3
     for index in 3,4,5:
         plateau[index][3:6] = obstacle3
         assert len(plateau[index]) == 10
@@ -57,11 +59,11 @@ def squarobs():
     iut.recouche()
     return iut
 
+
 class Test_init:
     """ test init
     """
     cut = mut.inFile            # class under test
-
 
     def test_nominal(self):
         iut = cut('tests/10nobs')
@@ -81,38 +83,36 @@ class Test_init:
                 assert type(char) == str
                 assert len(char) == 1
 
-
-
     def test_mocked_open(self):
         with mock.patch('builtins.open', sample) as fname:
             iut = cut(fname)
             assert set(iut.plateau[-1]) == {'o'}
 
-
     def test_init_fails(self):
         with mock.patch('builtins.open',
-                        mock.mock_open(read_data = with_unexp_char)) as fname:
+                        mock.mock_open(read_data=with_unexp_char)) as fname:
             with pytest.raises(ValueError) as excinfo:
                 iut = cut(fname)
 
         with mock.patch('builtins.open',
-                        mock.mock_open(read_data = unequal)) as fname:
+                        mock.mock_open(read_data=unequal)) as fname:
             with pytest.raises(ValueError) as excinfo:
                 iut = cut(fname)
 
         with mock.patch('builtins.open',
-                        mock.mock_open(read_data = not_an_int)) as fname:
+                        mock.mock_open(read_data=not_an_int)) as fname:
             with pytest.raises(ValueError) as excinfo:
                 iut = cut(fname)
+
 
 class Test_barre:
 
     def test_barre_h(self):
         expected = {
-            (0,0,7): '.' * 7,
-            (0,0,6): '.' * 6,
-            (1,0,6): '.' * 6,
-            (1,1,6): 'o.....'
+            (0, 0, 7): '.' * 7,
+            (0, 0, 6): '.' * 6,
+            (1, 0, 6): '.' * 6,
+            (1, 1, 6): 'o.....'
             }
 
         with mock.patch('builtins.open', sample) as fname:
@@ -123,11 +123,10 @@ class Test_barre:
                 barre = ''.join(iut.barre_h(pt, lg))
                 assert barre == expected[k]
 
-
     def test_barre_v(self):
         expected = {
-            (0,0,4): '...o',
-            (0,1,3): '..o',
+            (0, 0, 4): '...o',
+            (0, 1, 3): '..o',
             }
 
         with mock.patch('builtins.open', sample) as fname:
@@ -138,13 +137,14 @@ class Test_barre:
                 barre = ''.join(iut.barre_v(pt, lg))
                 assert barre == expected[k]
 
+
 class Test_fill_plateau:
 
     def check(self, plateau, iut):
         """verifie la taille du carre plein du plateau
         """
         coin, taille = iut.result
-        filled = [x for x in plateau  if iut.plein * taille in ''.join(x)]
+        filled = [x for x in plateau if iut.plein * taille in ''.join(x)]
         assert len(filled) == taille
         for line in filled:
             assert line.index(iut.plein) == coin.x
@@ -153,15 +153,15 @@ class Test_fill_plateau:
     def test_fill(self):
         with mock.patch('builtins.open', sample) as fname:
             iut = cut(fname)
-            iut.result = mut.Point(0,0), 1
+            iut.result = mut.Point(0, 0), 1
             rez = iut.fill_plateau()
             self.check(rez, iut)
 
-            iut.result = mut.Point(0,0), 4
+            iut.result = mut.Point(0, 0), 4
             rez = iut.fill_plateau()
             self.check(rez, iut)
 
-            iut.result = mut.Point(1,1), 3
+            iut.result = mut.Point(1, 1), 3
             rez = iut.fill_plateau()
             self.check(rez, iut)
 
@@ -175,11 +175,11 @@ class Test_Scan_Carre:
 
         iut = virgin10
 
-        coin = mut.Point(0,0)
+        coin = mut.Point(0, 0)
         taille = iut.scan_carre(coin)
         assert taille == 10
 
-        coin = mut.Point(1,1)
+        coin = mut.Point(1, 1)
         taille = iut.scan_carre(coin)
         assert taille == 9
 
@@ -187,34 +187,33 @@ class Test_Scan_Carre:
         taille = iut.scan_carre(coin)
         assert taille == 2
 
-        coin = mut.Point(9,9)
+        coin = mut.Point(9, 9)
         taille = iut.scan_carre(coin)
         assert taille == 1
 
         # sans rester sur la diagonale:
-        coin = mut.Point(1,4)
+        coin = mut.Point(1, 4)
         taille = iut.scan_carre(coin)
         assert taille == 6
 
-        coin = mut.Point(4,1)
+        coin = mut.Point(4, 1)
         taille = iut.scan_carre(coin)
         assert taille == 6
-
 
     def test_nominal_obs(self, spotted10):
         """ add an obstacle in the middle
         """
         iut = spotted10
 
-        coin = mut.Point(0,0)
+        coin = mut.Point(0, 0)
         taille = iut.scan_carre(coin)
         assert taille == 4
 
-        coin = mut.Point(0,3)
+        coin = mut.Point(0, 3)
         taille = iut.scan_carre(coin)
         assert taille == 4
 
-        coin = mut.Point(3,0)
+        coin = mut.Point(3, 0)
         taille = iut.scan_carre(coin)
         assert taille == 4
 
@@ -222,7 +221,7 @@ class Test_Scan_Carre:
 class Test_fail:
 
     """ test intended to fail, to validate github control
-        inhibit by removing Test from class name 
+        inhibit by removing Test from class name
     """
 
     def test_fail(self):
