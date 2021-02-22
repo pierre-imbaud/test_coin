@@ -217,3 +217,13 @@ class Test_Scan_Carre:
         coin = mut.Point(3,0)
         taille = iut.scan_carre(coin)
         assert taille == 4
+
+
+class Test_fail:
+
+    """ test intended to fail, to validate github control
+        inhibit by removing Test from class name 
+    """
+
+    def test_fail(self):
+        raise ValueError('intended fail')
