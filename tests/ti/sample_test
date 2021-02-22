@@ -9,4 +9,4 @@
 # and launched:
 #   docker run -it -p 5500:22 --rm test_coin
 
-cat example_file|sshpass -p machin ssh -p 22 machin@172.17.0.2 'export PYTHONPATH=/usr/src/lib ; PATH=$PATH:/usr/src/bin ; find_square -' |cmp - example_file_result || { echo sample_test failed! ; exit 2 ; }
+cat example_file|sshpass -p machin ssh -p 22 machin@172.17.0.2 'export PYTHONPATH=/usr/src/lib ; PATH=$PATH:/usr/src/bin ; find_square -' |cmp - example_file_result && echo sample_test success || { echo sample_test failed! ; exit 2 ; }
