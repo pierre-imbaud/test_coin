@@ -9,7 +9,7 @@
 """
 
 import collections
-
+import sys
 
 # coordonnées d'un point sur le plateau. les x sont les abcisses,
 # ils numérotent les colonnes,
@@ -26,22 +26,30 @@ class inFile():
         """ create instance from input file
         """
         self.fname = input
-        with open(input, 'r') as inf:
-            spl = spec_line = inf.readline().strip()
-            # fix! might strip leading spaces, if eg vide char is space
-            if len(spl) < 4:
-                raise ValueError('premiere ligne %s pas assez longue' % spl)
-            nb_lines, self.vide, self.obstacle, self.plein = \
-                spl[:-3], spl[-3], spl[-2], spl[-1]
-            try:
-                self.nb_lines = int(nb_lines)
-            except ValueError:
-                raise ValueError('%s: int attendu' % nb_lines)
-            # lire le plateau: tuple de tuples
-            self.plateau = tuple([tuple(x.strip())
-                                  for x in inf][:self.nb_lines])
-            self.recouche()
-            self.nb_cols = self.check()
+        if input == '-':
+            self.read_content(sys.stdin)
+        else:
+            with open(input, 'r') as inf:
+                self.read_content(inf)
+
+    def read_content(self, inf):
+        """ read content from input flow
+        """
+        spl = spec_line = inf.readline().strip()
+        # fix! might strip leading spaces, if eg vide char is space
+        if len(spl) < 4:
+            raise ValueError('premiere ligne %s pas assez longue' % spl)
+        nb_lines, self.vide, self.obstacle, self.plein = \
+            spl[:-3], spl[-3], spl[-2], spl[-1]
+        try:
+            self.nb_lines = int(nb_lines)
+        except ValueError:
+            raise ValueError('%s: int attendu' % nb_lines)
+        # lire le plateau: tuple de tuples
+        self.plateau = tuple([tuple(x.strip())
+                              for x in inf][:self.nb_lines])
+        self.recouche()
+        self.nb_cols = self.check()
 
     def recouche(self):
         """ recalcule l'attribut plateau_couche
